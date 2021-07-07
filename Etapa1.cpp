@@ -1,8 +1,14 @@
 #include <iostream>
 using namespace std;
 
+struct vuelta
+{
+    int numeroDeVuelta;
+    int duracion;
+};
 
-int calcularTiempo (int duracion){
+void imprimirTiempo(int duracion)
+{
     int minutos=0;
     int segundos=0;
 
@@ -10,34 +16,28 @@ int calcularTiempo (int duracion){
     minutos = duracion / 100;
 
     cout << minutos << " min  " << segundos << " seg" << endl;
-
- return 0;
 }
 
-void leer(string mensaje, int &valor) {
+void leer(string mensaje, int &valor)
+{
     cout << mensaje << endl;
     cin >> valor;
     return;
 }
 
-int main () {
-    int vueltas=0;
+int main ()
+{
     int cantVueltas=0;
     int distanciaKM=0;
-    int duracion=0;
     float reduccionTiempo=0;
 
+    vuelta vueltaLenta;
+    vuelta vueltaRapida;
 
-    int vueltaRapida=0;
-    int tiempoRapido=0;
-    int tiempoLento=0;
-    int vueltaLenta=0;
+    cout << "Cantidad de vueltas (max 20): " << endl;
+    cin >> cantVueltas;
 
-  
-  cout << "Cantidad de vueltas (max 20): " << endl;
-  cin >> cantVueltas;
-
-    int posicion[cantVueltas] = {0};
+    vuelta vueltas[cantVueltas];
 
     leer("Distancia de la vuelta (Km)", distanciaKM);
 
@@ -45,49 +45,47 @@ int main () {
     
     for (int i = 0; i < cantVueltas; i++)
     {
+        leer("Ingrese el numero de vuelta: ", vueltas[i].numeroDeVuelta);
+        leer("Ingrese la duracion de la vuelta (MMSS): ", vueltas[i].duracion);
         
-        
-        cout << "Ingrese su posicion en la vuelta " << i+1 << " de: " << cantVueltas << endl;
-        cin >> posicion[i];
-        cout << "Ingrese la duracion de la vuelta (MMSS):" << endl;
-        cin >> duracion;
-
-        cout << "Posicion: " << posicion[i] << endl;
-        calcularTiempo(duracion);
-        
-        if (i=0)
+        if (i == 0)
         {
-            tiempoRapido = duracion;
-            tiempoLento = duracion;
+            vueltaRapida.duracion = vueltas[i].duracion;
+            vueltaLenta.duracion = vueltas[i].duracion;
+            vueltaLenta.numeroDeVuelta = vueltas[i].numeroDeVuelta;
+            vueltaRapida.numeroDeVuelta = vueltas[i].numeroDeVuelta;
         }
         
-        if (duracion < tiempoRapido)
+        if (vueltas[i].duracion < vueltaRapida.duracion)
         {
-            tiempoRapido = duracion;
-            vueltaRapida = posicion[i];
+            vueltaRapida.duracion = vueltas[i].duracion;
+            vueltaRapida.numeroDeVuelta = vueltas[i].numeroDeVuelta;
         }
 
-        if (duracion > tiempoLento)
+        if (vueltas[i].duracion > vueltaLenta.duracion)
         {
-            tiempoLento = duracion;
-            vueltaLenta = posicion[i];
+            vueltaLenta.duracion = vueltas[i].duracion;
+            vueltaLenta.numeroDeVuelta = vueltas[i].numeroDeVuelta;
         }
         
     }
     cout << endl;
-    
 
+    reduccionTiempo = (vueltaRapida.duracion / vueltaLenta.duracion) - 1;
+    // TODO: revisar esto con el profe
 
-    reduccionTiempo = tiempoLento / tiempoRapido;
+    // reduccionTiempo = ((vueltaRapida.duracion * 100) / vueltaLenta.duracion) - 1;
 
     cout << "Cantidad de vueltas: " << cantVueltas << endl;
     cout << "Distancia de la vuelta: " << distanciaKM << " Km" << endl;
-    cout << "Vuelta mas Rapida: " << vueltaRapida << " Tiempo: " << tiempoRapido << endl;
-    cout << "Vuelta mas Lenta: " << vueltaLenta << " Tiempo: " << tiempoLento << endl;
+    cout << "Vuelta mas Rapida: " << vueltaRapida.numeroDeVuelta << " Tiempo: ";
+    imprimirTiempo(vueltaRapida.duracion);
+    cout << "Vuelta mas Lenta: " << vueltaLenta.numeroDeVuelta << " Tiempo: ";
+    imprimirTiempo(vueltaLenta.duracion);
     cout << "Porcentaje de reduccion de tiempo: " << reduccionTiempo << " %" << endl;
  
- system("pause");
- return 0;
+    system("pause");
+    return 0;
 }
 
 
@@ -106,15 +104,14 @@ De cada vuelta siempre se conoce:
 ● Su duración, expresada como un número entero en el formato MMSS (minutos,segundos) 
 También se conoce la extensión de la vuelta expresada en Km, para todas las vueltas es la misma
 ya que el ciclista realiza los entrenamientos en un circuito cerrado.
-*/
 
-/*              ETAPA   1
+
+                  ETAPA   1
 
 Desarrollar una aplicación que permita al ciclista: 
  a. Cargar los datos de las vueltas seleccionadas. Se debe poder cargar los datos de una cantidad arbitraria de vueltas determinada por el ciclista. 
  b. Cuál fue, de las ingresadas, la vuelta más rápida y su tiempo. 
  c. Cuál fue, de las ingresadas, la vuelta más lenta y su tiempo. 
  d. Cuál es el porcentaje de reducción de tiempo entre el peor y mejor tiempo (Tmin / TMax -1)
-
 
 */
