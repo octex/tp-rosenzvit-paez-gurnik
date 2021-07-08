@@ -1,8 +1,8 @@
 #include <iostream>
 using namespace std;
 
-#define VUELTAS 4
-#define DIAS 30
+#define VUELTAS 2
+#define DIAS 2
 
 struct vuelta
 {
@@ -12,18 +12,14 @@ struct vuelta
     int velocidad;
 };
 
-struct dia
-{
-    int fecha;
-    vuelta vueltaDia;
-};
-
 void imprimirTiempo(int duracion);
 void calcularFecha (int fechaC);
 void ordenarVueltas(vuelta arr[], int n);
 void leer(string mensaje, int &valor);
 int convertirEnSegundos(int tiempo);
 void imprimirMejoresVueltas(vuelta arr[], int n, int velocidadMedia);
+int obtenerMejorVuelta(vuelta arr[], int n);
+int obtenerPeorVuelta(vuelta arr[], int n);
 
 int main ()
 {
@@ -33,9 +29,14 @@ int main ()
     int velocidadMedia = 0;
     int vueltaABuscar = 0;
     float reduccionTiempo = 0;
+    int entrenamientoMejorVuelta;
+    int entrenamientoPeorVuelta;
 
     vuelta vueltaLenta;
     vuelta vueltaRapida;
+
+    vuelta vueltasLentas[DIAS];
+    vuelta vueltasRapidas[DIAS];
 
     vuelta vueltas[VUELTAS];
     vuelta vueltasMes[DIAS][VUELTAS];
@@ -43,73 +44,126 @@ int main ()
     leer("Distancia del recorrido (Km)", distanciaKM);
     distanciaMetros = distanciaKM * 1000;
     // position of each lap //
-    
-    for (int i = 0; i < VUELTAS; i++)
+    for (int j = 0; j < DIAS; j++)
     {
-        leer("Ingrese el numero de vuelta: ", vueltas[i].numeroDeVuelta);
-        leer("Ingrese la duracion de la vuelta (MMSS): ", vueltas[i].duracion);
-        leer("Ingrese la fecha de la vuelta (AAAAMMDD): ", vueltas[i].fecha);
-        vueltas[i].velocidad = distanciaMetros / convertirEnSegundos(vueltas[i].duracion);
-        tiempoTotalEnSeg += convertirEnSegundos(vueltas[i].duracion);
-        
-        if (i == 0)
+        cout << "Dia " << j + 1 << endl;
+        for (int i = 0; i < VUELTAS; i++)
         {
-            vueltaRapida.duracion = vueltas[i].duracion;
-            vueltaLenta.duracion = vueltas[i].duracion;
-            vueltaLenta.numeroDeVuelta = vueltas[i].numeroDeVuelta;
-            vueltaRapida.numeroDeVuelta = vueltas[i].numeroDeVuelta;
-        }
-        
-        if (vueltas[i].duracion < vueltaRapida.duracion)
-        {
-            vueltaRapida.duracion = vueltas[i].duracion;
-            vueltaRapida.numeroDeVuelta = vueltas[i].numeroDeVuelta;
-        }
+            leer("Ingrese el numero de vuelta: ", vueltasMes[j][i].numeroDeVuelta);
+            leer("Ingrese la duracion de la vuelta (MMSS): ", vueltasMes[j][i].duracion);
+            leer("Ingrese la fecha de la vuelta (AAAAMMDD): ", vueltasMes[j][i].fecha);
+            vueltasMes[j][i].velocidad = distanciaMetros / convertirEnSegundos(vueltasMes[j][i].duracion);
+            tiempoTotalEnSeg += convertirEnSegundos(vueltasMes[j][i].duracion);
+            
+            if (i == 0 && j == 0)
+            {
+                vueltaRapida = vueltasMes[j][i];
+                vueltaLenta = vueltasMes[j][i];
+            }
+            
+            if (vueltasMes[j][i].duracion < vueltaRapida.duracion)
+            {
+                vueltaRapida = vueltasMes[j][i];
+            }
 
-        if (vueltas[i].duracion > vueltaLenta.duracion)
-        {
-            vueltaLenta.duracion = vueltas[i].duracion;
-            vueltaLenta.numeroDeVuelta = vueltas[i].numeroDeVuelta;
+            if (vueltasMes[j][i].duracion > vueltaLenta.duracion)
+            {
+                vueltaLenta = vueltasMes[j][i];
+            }
         }
-        
+        ordenarVueltas(vueltasMes[j], VUELTAS);
+        velocidadMedia = distanciaMetros / tiempoTotalEnSeg;
+        imprimirMejoresVueltas(vueltasMes[j], VUELTAS, velocidadMedia);
+        leer("Ingrese el numero de vuelta que desee buscar: ", vueltaABuscar);
+        vueltaABuscar = vueltaABuscar - 1;
+        if (vueltaABuscar >= 0)
+        {
+            cout << "Numero de vuelta: " << vueltasMes[j][vueltaABuscar].numeroDeVuelta << endl;
+            cout << "Duracion de la vuelta: " << vueltasMes[j][vueltaABuscar].duracion << endl;
+            cout << "Fecha de la vuelta: " << vueltasMes[j][vueltaABuscar].fecha << endl;
+            cout << "Velocidad de la vuelta: " << vueltasMes[j][vueltaABuscar].velocidad << " m/s" << endl;
+        }
+        else
+        {
+            cout << "No se encontro la vuelta." << endl;
+        }
+        vueltaABuscar = vueltaABuscar - 1;
+        // TODO: revisar esto con el profe
+        reduccionTiempo = (vueltaRapida.duracion / vueltaLenta.duracion) - 1;
+
+        // reduccionTiempo = ((vueltaRapida.duracion * 100) / vueltaLenta.duracion) - 1;
+
+        cout << "Cantidad de vueltas: " << VUELTAS << endl;
+        cout << "Distancia de la vuelta: " << distanciaKM << " Km" << endl;
+        cout << "Vuelta mas Rapida: " << vueltaRapida.numeroDeVuelta << " Tiempo: ";
+        imprimirTiempo(vueltaRapida.duracion);
+        cout << "Vuelta mas Lenta: " << vueltaLenta.numeroDeVuelta << " Tiempo: ";
+        imprimirTiempo(vueltaLenta.duracion);
+        cout << "Porcentaje de reduccion de tiempo: " << reduccionTiempo << " %" << endl;
+
+        vueltasLentas[j] = vueltaLenta;
+        vueltasRapidas[j] = vueltaRapida;
     }
+
+    entrenamientoMejorVuelta = obtenerMejorVuelta(vueltasRapidas, DIAS);
+    entrenamientoPeorVuelta = obtenerPeorVuelta(vueltasLentas, DIAS);
+
+    cout << "   Mejor vuelta del mes:" << endl;
+    vuelta mejorVueltaDelMes = vueltasRapidas[entrenamientoMejorVuelta];
+    cout << "Fecha: ";
+    calcularFecha(mejorVueltaDelMes.fecha);
+    cout << "Numero: " << mejorVueltaDelMes.numeroDeVuelta << endl;
+    cout << "Tiempo: ";
+    imprimirTiempo(mejorVueltaDelMes.duracion);
+    cout << "Velocidad: " << mejorVueltaDelMes.velocidad << endl;
+
+    cout << "   Peor vuelta del mes:" << endl;
+    cout << "Tiempo: ";
+    imprimirTiempo(vueltasLentas[entrenamientoPeorVuelta].duracion);
+
     cout << endl;
-
-    ordenarVueltas(vueltas, VUELTAS);
-
-
-    velocidadMedia = distanciaMetros / tiempoTotalEnSeg;
-    imprimirMejoresVueltas(vueltas, VUELTAS, velocidadMedia);
-
-    leer("Ingrese el numero de vuelta que desee buscar: ", vueltaABuscar);
-    vueltaABuscar = vueltaABuscar - 1;
-    if (vueltaABuscar >= 0)
-    {
-        cout << "Numero de vuelta: " << vueltas[vueltaABuscar].numeroDeVuelta << endl;
-        cout << "Duracion de la vuelta: " << vueltas[vueltaABuscar].duracion << endl;
-        cout << "Fecha de la vuelta: " << vueltas[vueltaABuscar].fecha << endl;
-        cout << "Velocidad de la vuelta: " << vueltas[vueltaABuscar].velocidad << " m/s" << endl;
-    }
-    else
-    {
-        cout << "No se encontro la vuelta." << endl;
-    }
-
-    // TODO: revisar esto con el profe
-    reduccionTiempo = (vueltaRapida.duracion / vueltaLenta.duracion) - 1;
-
-    // reduccionTiempo = ((vueltaRapida.duracion * 100) / vueltaLenta.duracion) - 1;
-
-    cout << "Cantidad de vueltas: " << VUELTAS << endl;
-    cout << "Distancia de la vuelta: " << distanciaKM << " Km" << endl;
-    cout << "Vuelta mas Rapida: " << vueltaRapida.numeroDeVuelta << " Tiempo: ";
-    imprimirTiempo(vueltaRapida.duracion);
-    cout << "Vuelta mas Lenta: " << vueltaLenta.numeroDeVuelta << " Tiempo: ";
-    imprimirTiempo(vueltaLenta.duracion);
-    cout << "Porcentaje de reduccion de tiempo: " << reduccionTiempo << " %" << endl;
- 
     system("pause");
     return 0;
+}
+
+int obtenerMejorVuelta(vuelta arr[], int n)
+{
+    vuelta mejorVuelta;
+    int j = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (i == 0)
+        {
+            mejorVuelta = arr[i];
+            j = i;
+        }
+        if (mejorVuelta.duracion > arr[i].duracion)
+        {
+            mejorVuelta = arr[i];
+            j = i;
+        }
+    }
+    return j;
+}
+
+int obtenerPeorVuelta(vuelta arr[], int n)
+{
+    vuelta peorVuelta;
+    int j = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (i == 0)
+        {
+            peorVuelta = arr[i];
+            j = i;
+        }
+        if (peorVuelta.duracion < arr[i].duracion)
+        {
+            peorVuelta = arr[i];
+            j = i;
+        }
+    }
+    return j;
 }
 
 
