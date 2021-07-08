@@ -67,10 +67,10 @@ int main ()
         
     }
     cout << endl;
-    
+
     ordenarVueltas(vueltas, VUELTAS);
 
-    system("pause");
+
     velocidadMedia = distanciaMetros / tiempoTotalEnSeg;
     imprimirMejoresVueltas(vueltas, VUELTAS, velocidadMedia);
 
