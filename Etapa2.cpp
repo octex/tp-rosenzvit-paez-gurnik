@@ -35,6 +35,7 @@ int main ()
 
     leer("Distancia del recorrido (Km)", distanciaKM);
     distanciaMetros = distanciaKM * 1000;
+    cout << endl;
     // position of each lap //
     
     for (int i = 0; i < VUELTAS; i++)
@@ -42,6 +43,7 @@ int main ()
         leer("Ingrese el numero de vuelta: ", vueltas[i].numeroDeVuelta);
         leer("Ingrese la duracion de la vuelta (MMSS): ", vueltas[i].duracion);
         leer("Ingrese la fecha de la vuelta (AAAAMMDD): ", vueltas[i].fecha);
+        cout << endl;
         vueltas[i].velocidad = distanciaMetros / convertirEnSegundos(vueltas[i].duracion);
         tiempoTotalEnSeg += convertirEnSegundos(vueltas[i].duracion);
         
@@ -72,15 +74,21 @@ int main ()
 
 
     velocidadMedia = distanciaMetros / tiempoTotalEnSeg;
+
+    cout << "Velocidad media: " << velocidadMedia << " m/s" << endl;
+    cout << "------------------------------" << endl;
     imprimirMejoresVueltas(vueltas, VUELTAS, velocidadMedia);
+    cout << endl;
 
     leer("Ingrese el numero de vuelta que desee buscar: ", vueltaABuscar);
     vueltaABuscar = vueltaABuscar - 1;
+    cout << endl;
+
     if (vueltaABuscar >= 0)
     {
         cout << "Numero de vuelta: " << vueltas[vueltaABuscar].numeroDeVuelta << endl;
-        cout << "Duracion de la vuelta: " << vueltas[vueltaABuscar].duracion << endl;
-        cout << "Fecha de la vuelta: " << vueltas[vueltaABuscar].fecha << endl;
+        cout << "Duracion de la vuelta: "; imprimirTiempo(vueltas[vueltaABuscar].duracion);
+        cout << "Fecha de la vuelta: "; calcularFecha(vueltas[vueltaABuscar].fecha);
         cout << "Velocidad de la vuelta: " << vueltas[vueltaABuscar].velocidad << " m/s" << endl;
     }
     else
@@ -92,12 +100,17 @@ int main ()
     reduccionTiempo = (vueltaRapida.duracion / vueltaLenta.duracion) - 1;
 
     // reduccionTiempo = ((vueltaRapida.duracion * 100) / vueltaLenta.duracion) - 1;
+    cout << "------------------------------------------------" << endl;
+    
+    cout << "Cantidad total de vueltas: " << VUELTAS << endl;
 
-    cout << "Cantidad de vueltas: " << VUELTAS << endl;
-    cout << "Distancia de la vuelta: " << distanciaKM << " Km" << endl;
+    cout << endl;
+
+    cout << "Distancia de las vueltas: " << distanciaKM << " Km" << endl;
+    cout << endl;
     cout << "Vuelta mas Rapida: " << vueltaRapida.numeroDeVuelta << " Tiempo: ";
     imprimirTiempo(vueltaRapida.duracion);
-    cout << "Vuelta mas Lenta: " << vueltaLenta.numeroDeVuelta << " Tiempo: ";
+    cout << "Vuelta mas Lenta: " << vueltaLenta.numeroDeVuelta << "  Tiempo: ";
     imprimirTiempo(vueltaLenta.duracion);
     cout << "Porcentaje de reduccion de tiempo: " << reduccionTiempo << " %" << endl;
  
