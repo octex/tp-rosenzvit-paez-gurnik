@@ -28,7 +28,7 @@ int main ()
     int tiempoTotalEnSeg = 0;
     int velocidadMedia = 0;
     int vueltaABuscar = 0;
-    float reduccionTiempo = 0;
+    float tiempoPromedio = 0;
     int entrenamientoMejorVuelta;
     int entrenamientoPeorVuelta;
 
@@ -38,7 +38,6 @@ int main ()
     vuelta vueltasLentas[DIAS];
     vuelta vueltasRapidas[DIAS];
 
-    vuelta vueltas[VUELTAS];
     vuelta vueltasMes[DIAS][VUELTAS];
 
     leer("Distancia del recorrido (Km)", distanciaKM);
@@ -88,10 +87,9 @@ int main ()
             cout << "No se encontro la vuelta." << endl;
         }
         vueltaABuscar = vueltaABuscar - 1;
-        // TODO: revisar esto con el profe
-        reduccionTiempo = (vueltaRapida.duracion / vueltaLenta.duracion) - 1;
+        
 
-        // reduccionTiempo = ((vueltaRapida.duracion * 100) / vueltaLenta.duracion) - 1;
+        tiempoPromedio = tiempoTotalEnSeg / VUELTAS;
 
         cout << "Cantidad de vueltas: " << VUELTAS << endl;
         cout << "Distancia de la vuelta: " << distanciaKM << " Km" << endl;
@@ -99,7 +97,7 @@ int main ()
         imprimirTiempo(vueltaRapida.duracion);
         cout << "Vuelta mas Lenta: " << vueltaLenta.numeroDeVuelta << " Tiempo: ";
         imprimirTiempo(vueltaLenta.duracion);
-        cout << "Porcentaje de reduccion de tiempo: " << reduccionTiempo << " %" << endl;
+        cout << "Tiempo promedio: " << tiempoPromedio << " segundos" << endl;
 
         vueltasLentas[j] = vueltaLenta;
         vueltasRapidas[j] = vueltaRapida;
