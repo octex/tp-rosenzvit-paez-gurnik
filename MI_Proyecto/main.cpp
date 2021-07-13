@@ -7,7 +7,7 @@ int main ()
     int dias = 30;
     int vueltas = 20;
 
-    int distanciaKM = 0;
+    int distanciaKM;
     int distanciaMetros;
     int tiempoTotalEnSeg = 0;
     int velocidadMedia = 0;
@@ -21,6 +21,7 @@ int main ()
 
     vuelta vueltasLentas[dias];
     vuelta vueltasRapidas[dias];
+    vuelta mejorVueltaDelMes;
 
     vuelta vueltasMes[dias][vueltas];
 
@@ -104,17 +105,19 @@ int main ()
     
     cout << "------------------------------------------------" << endl;
     cout << "\tMejor vuelta del mes:" << endl;
-    vuelta mejorVueltaDelMes = vueltasRapidas[entrenamientoMejorVuelta];
+    mejorVueltaDelMes = vueltasRapidas[entrenamientoMejorVuelta];
     imprimirFecha(mejorVueltaDelMes.fecha);
     cout << "Numero: " << mejorVueltaDelMes.numeroDeVuelta << endl;
     cout << "Tiempo: ";
     imprimirTiempo(mejorVueltaDelMes.duracion);
     cout << "Velocidad: " << mejorVueltaDelMes.velocidad << endl;
+    
     cout << "------------------------------------------------" << endl;
     cout << "\tPeor vuelta del mes:" << endl;
     cout << "Tiempo: ";
     imprimirTiempo(vueltasLentas[entrenamientoPeorVuelta].duracion);
-    cout << endl;
+    
     system("pause");
+
     return 0;
 }
